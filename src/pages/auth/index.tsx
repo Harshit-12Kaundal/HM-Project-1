@@ -7,6 +7,11 @@ import { useRecoilValue } from "recoil";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import React from "react";
+
+
+	
+
 type AuthPageProps = {};
 
 const AuthPage: React.FC<AuthPageProps> = () => {
@@ -14,6 +19,7 @@ const AuthPage: React.FC<AuthPageProps> = () => {
 	const [user, loading, error] = useAuthState(auth);
 	const [pageLoading, setPageLoading] = useState(true);
 	const router = useRouter();
+	
 
 	useEffect(() => {
 		if (user) router.push("/");
@@ -21,7 +27,9 @@ const AuthPage: React.FC<AuthPageProps> = () => {
 	}, [user, router, loading]);
 
 	if (pageLoading) return null;
-
+	
+	
+	  
 	return (
 		<div className='bg-gradient-to-b from-gray-600 to-black h-screen relative'>
 			<div className='max-w-7xl mx-auto'>
@@ -35,3 +43,9 @@ const AuthPage: React.FC<AuthPageProps> = () => {
 	);
 };
 export default AuthPage;
+
+
+ // Assuming your Signup component is located in ./src/components/Signup
+
+
+

@@ -6,6 +6,7 @@ import ResetPassword from "./ResetPassword";
 import Signup from "./Signup";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
+
 type AuthModalProps = {};
 
 const AuthModal: React.FC<AuthModalProps> = () => {
