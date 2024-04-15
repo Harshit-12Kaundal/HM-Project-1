@@ -27,6 +27,7 @@ export const validParentheses: Problem = {
 	<li class="mt-3">Every close bracket has a corresponding open bracket of the same type. </li>
 	</ul>`,
 	examples: [
+		
 		{
 			id: 0,
 			inputText: 's = "()"',

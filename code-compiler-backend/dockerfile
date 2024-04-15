@@ -1,0 +1,21 @@
+# Use the AWS Lambda Node.js 18 base image
+FROM public.ecr.aws/lambda/nodejs:18 as builder
+
+# Install necessary development tools and runtimes
+RUN yum install -y gcc-c++ python3 java-1.8.0-openjdk-devel
+
+# Install TypeScript globally
+RUN npm install -g typescript
+
+# Set the working directory to the Lambda function root
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Copy source files and requirements file to the working directory
+
+COPY requirements.txt ${LAMBDA_TASK_ROOT}/
+
+# Install Python dependencies using Python 3's pip
+RUN pip3 install -r requirements.txt
+
+# Set the entry point for the Lambda function
+CMD ["index.handler"]

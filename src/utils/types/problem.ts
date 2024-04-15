@@ -8,6 +8,7 @@ export type Example = {
 
 // local problem data
 export type Problem = {
+	language<T>(language: any): [any, any];
 	id: string;
 	title: string;
 	problemStatement: string;

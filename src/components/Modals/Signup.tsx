@@ -1,5 +1,3 @@
-// ./src/components/Signup.tsx
-
 import React, { useEffect, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth, firestore } from "@/firebase/firebase";
@@ -7,10 +5,13 @@ import { doc, setDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { sendEmailVerification } from 'firebase/auth'; 
+import { authModalState } from "@/atoms/authModalAtom";
+import { useSetRecoilState } from "recoil";
 
 type SignupProps = {};
 
 const Signup: React.FC<SignupProps> = () => {
+    const setAuthModalState = useSetRecoilState(authModalState);
     const router = useRouter();
     const [inputs, setInputs] = useState({ email: "", displayName: "", password: "" });
     const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
@@ -31,7 +32,21 @@ const Signup: React.FC<SignupProps> = () => {
             await sendEmailVerification(auth.currentUser!);
             toast.info("Email verification link sent! Please verify your email to complete registration.", { position: "top-center" });
 
-            // Redirect user to a verification page
+            // Save additional user data to Firestore
+            const userData = {
+                uid: newUserCredential.user.uid,
+                email: newUserCredential.user.email,
+                displayName: inputs.displayName,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                likedProblems: [],
+                dislikedProblems: [],
+                solvedProblems: [],
+                starredProblems: [],
+            };
+            await setDoc(doc(firestore, "users", newUserCredential.user.uid), userData);
+
+            // Redirect user to a verification page or dashboard
             router.push(`/verification?email=${inputs.email}`);
         } catch (error: any) {
             toast.error(error.message, { position: "top-center" });
@@ -44,6 +59,10 @@ const Signup: React.FC<SignupProps> = () => {
         if (error) alert(error.message);
     }, [error]);
 
+    const handleClick = () => {
+        setAuthModalState((prev) => ({ ...prev, type: "login" }));
+    };
+
     return (
         <form className='space-y-6 px-6 pb-4' onSubmit={handleRegister}>
             <h3 className='text-xl font-medium text-white'>Register to codestop</h3>
@@ -55,7 +74,7 @@ const Signup: React.FC<SignupProps> = () => {
                     name='email'
                     id='email'
                     className='border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white'
-                    placeholder='name@company.com'
+                    placeholder='Enter your email'
                 />
             </div>
             <div>
@@ -66,7 +85,7 @@ const Signup: React.FC<SignupProps> = () => {
                     name='displayName'
                     id='displayName'
                     className='border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white'
-                    placeholder='name'
+                    placeholder='Enter your display name'
                 />
             </div>
             <div>
@@ -77,7 +96,7 @@ const Signup: React.FC<SignupProps> = () => {
                     name='password'
                     id='password'
                     className='border-2 outline-none sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-600 border-gray-500 placeholder-gray-400 text-white'
-                    placeholder='*******'
+                    placeholder='Enter your password'
                 />
             </div>
 
@@ -90,7 +109,7 @@ const Signup: React.FC<SignupProps> = () => {
 
             <div className='text-sm font-medium text-gray-300'>
                 Already have an account?{" "}
-                <a href='#' className='text-blue-700 hover:underline' onClick={() => router.push("/login")}>
+                <a href='#' className='text-blue-700 hover:underline' onClick={handleClick}>
                     Log In
                 </a>
             </div>
