@@ -4,9 +4,6 @@ FROM public.ecr.aws/lambda/nodejs:18 as builder
 # Install necessary development tools and runtimes
 RUN yum install -y gcc-c++ python3 java-1.8.0-openjdk-devel
 
-# Install TypeScript globally
-RUN npm install -g typescript
-
 # Set the working directory to the Lambda function root
 WORKDIR ${LAMBDA_TASK_ROOT}
 
