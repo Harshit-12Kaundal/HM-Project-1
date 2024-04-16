@@ -15,7 +15,7 @@ const VerificationPage: React.FC = () => {
           toast.success("Email verified successfully! You can now access the problem table.", {
             position: "top-center",
           });
-          // Redirect to the problem table page
+          // Redirect to the problem table Page
           router.push("/problem-table");
         })
         .catch((error) => {
